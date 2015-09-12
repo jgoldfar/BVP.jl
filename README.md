@@ -3,7 +3,7 @@
 ### What is this repository for? ###
 
 * BVP.jl contains implementations of BVP solvers for ODE, implemented in Julia. The primary source is Ascher, Mattheij, and Russell, *Numerical Solution of Boundary Value Problems for Ordinary Differential Equations*, SIAM, 1995.
-* version 0.1
+* version 0.0.1
 
 ### How do I get set up? ###
 
@@ -15,7 +15,7 @@ will run the extensive set of solver tests. Alternatively, run `julia test/runte
 
 ### How do I use the library? ###
 
-Documentation TBD. Perhaps more importantly, the details of the API is TBD, but the eventual goal is to have a unified, MATLAB-like interface to the solver collection, as well as special
+Documentation TBD. Perhaps more importantly, the details of the API is TBD, but the eventual goal is to have a unified, MATLAB-like interface to the solver collection, as well as internal solvers implementing specific algorithms for specific problems.
 
 ### Who do I talk to? ###
 
