@@ -1,4 +1,5 @@
 # README #
+[![Build Status](https://magnum.travis-ci.com/jgoldfar/BVP.jl.svg?token=zdgtXHoeQwBuQetRRHxV)](https://magnum.travis-ci.com/jgoldfar/BVP.jl)
 
 ### What is this repository for? ###
 
