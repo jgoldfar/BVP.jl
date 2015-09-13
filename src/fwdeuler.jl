@@ -10,7 +10,7 @@ function fwdeuler{T<:Real}(odefun::Function,
     yvout[i, 1] = iv[i]
   end
   xcurr = xgrid[1]
-  const yprev = iv
+  const yprev = copy(iv)
   for i in 2:nxgrid
     # Save x values/indexing between iterations
     xprev, xcurr = xcurr, xgrid[i]
@@ -25,6 +25,7 @@ function fwdeuler{T<:Real}(odefun::Function,
       yprev[j] = ycurr[j]
     end
   end
+  return yvout
 end
 function fwdeuler{T<:Real}(odefun::Function,
                            xgrid::GridType{T},
@@ -36,7 +37,7 @@ function fwdeuler{T<:Real}(odefun::Function,
     yvout[i, 1] = iv[i]
   end
   xcurr = xgrid[1]
-  const yprev = iv
+  const yprev = copy(iv)
   for i in 2:nxgrid
     # Save x values/indexing between iterations
     xprev, xcurr = xcurr, xgrid[i]
