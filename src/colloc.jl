@@ -2,8 +2,7 @@
 function fdm(p::Function, r::Function, q::Function, va::Real, vb::Real, N::Int)
   # Solver for y'' - p y' - r y == q, y(0)=va, y(1)=vb
   const T = typeof(va)
-  #TODO: Replace strict version comparison
-  if VERSION == v"0.4.0-rc1"
+  if VERSION >= v"0.4-"
     const xgrid = linspace(0, 1, N + 1)
   else
     const xgrid = linrange(0, 1, N + 1)
