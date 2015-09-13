@@ -8,11 +8,8 @@
 
 ### How do I get set up? ###
 
-* The main code repository is self-contained, requiring only [Julia](http://julialang.org). After cloning the package to your `~/.julia/v0.3` or `~/.julia/v0.4` directory, running
-```julia
-Pkg.test("BVP")
-```
-will run the extensive set of solver tests. Alternatively, run `julia test/runtests.jl` from the current directory.
+* The main code repository is self-contained, requiring only [Julia](http://julialang.org). Run `Pkg.add("BVP")` to add the package to your Julia installation, and call `Pkg.test("BVP")`
+to run the extensive set of solver tests. Alternatively, run `julia test/runtests.jl` from the current directory.
 
 ### How do I use the library? ###
 
@@ -21,3 +18,4 @@ Documentation TBD. Perhaps more importantly, the details of the API is TBD, but 
 ### Who do I talk to? ###
 
 * Jonathan Goldfarb <jgoldfar@gmail.com>
+* *Note that the GitHub repo is available only as a convenience for use in Julia. Please submit issues to the main repo at [https://bitbucket.org/jgoldfar/bvp.jl](https://bitbucket.org/jgoldfar/bvp.jl)*
