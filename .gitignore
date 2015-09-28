@@ -1,2 +1,4 @@
 *.tags
 *.hg
+/.hgignore
+/LICENSE.xmp
