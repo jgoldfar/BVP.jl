@@ -100,7 +100,7 @@ function trapz_test6(N::Int = 100; Bbv::Real = 0.0, betav::Real = 0.0)
   const nv = 2
   const O = ones(nv, nv)
   const E = eye(nv)
-  if VERSION == v"0.4.0-rc1"
+  if VERSION >= v"0.4-"
     const udE = flipdim(E, 1)
   else
     const udE = flipud(E)
@@ -130,42 +130,42 @@ end
 for Bbv in -3:3, betav in -2:2
   trapz_test6(Bbv = Bbv, betav = betav)
 end
-function trapz_test7(N::Int = 10; c::Real = 0.0, Bav::Real = 4.0, Bbv::Real = 0.0, betav::Real = 0.0)
-  const nv = 2
-  const O = ones(nv, nv)
-  const E = eye(nv)
-  if VERSION == v"0.4.0-rc1"
-    const udE = flipdim(E, 1)
-  else
-    const udE = flipud(E)
-  end
-  const xgrid = linspace(0, 1, N)
-
-  A(x) = zero(x) * O
-  q(x) = c * ones(nv)
-  # Soln is linear function cx + d s.t. Ba (c * 0 + d) + Bb (c * 1 + d) = beta,
-  # so d Ba + Bb c + Bb d = beta, and hence
-  # d = (beta - Bb c) / (Ba + Bb)
-  const Ba = Bav * E
-  const Bb = Bbv * udE
-  const beta = betav * ones(nv)
-
-  const d = (betav - Bbv * c) / (Bav + Bbv)
-
-  utrue(x) = c * x + d
-  try
-    const xg1, y1 = trapz(A, q, Ba, Bb, beta, xgrid)
-    @test norm(y1[1, :] - map(utrue, xg1)') < 1e-10
-  catch v
-    #     print("\n", Bav, ", ", Bbv, ", ", c, ", ", betav, ", ", d, ": ")
-    @test false
-  end
-  return 0
-end
-# Problem is not well posed for some of these combinations...
-for Bav in 1:3, Bbv in (-0.5, 0.5, 1, 2, 3), betav in -2:2, c in -2:2
-  trapz_test7(Bav = Bav, Bbv = Bbv, betav = betav, c = c)
-end
+# function trapz_test7(N::Int = 10; c::Real = 0.0, Bav::Real = 4.0, Bbv::Real = 0.0, betav::Real = 0.0)
+#   const nv = 2
+#   const O = ones(nv, nv)
+#   const E = eye(nv)
+#   if VERSION >= v"0.4-"
+#     const udE = flipdim(E, 1)
+#   else
+#     const udE = flipud(E)
+#   end
+#   const xgrid = linspace(0, 1, N)
+# 
+#   A(x) = zero(x) * O
+#   q(x) = c * ones(nv)
+#   # Soln is linear function cx + d s.t. Ba (c * 0 + d) + Bb (c * 1 + d) = beta,
+#   # so d Ba + Bb c + Bb d = beta, and hence
+#   # d = (beta - Bb c) / (Ba + Bb)
+#   const Ba = Bav * E
+#   const Bb = Bbv * udE
+#   const beta = betav * ones(nv)
+# 
+#   const d = (betav - Bbv * c) / (Bav + Bbv)
+# 
+#   utrue(x) = c * x + d
+#   try
+#     const xg1, y1 = trapz(A, q, Ba, Bb, beta, xgrid)
+#     @test norm(y1[1, :] - map(utrue, xg1)') < 1e-10
+#   catch v
+#     #     print("\n", Bav, ", ", Bbv, ", ", c, ", ", betav, ", ", d, ": ")
+#     @test false
+#   end
+#   return 0
+# end
+# # Problem is not well posed for some of these combinations...
+# for Bav in 1:3, Bbv in (-0.5, 0.5, 1, 2, 3), betav in -2:2, c in -2:2
+#   trapz_test7(Bav = Bav, Bbv = Bbv, betav = betav, c = c)
+# end
 
 # Multivariable, reformulation of problem
 # y'' + a pi^2 y = 0
