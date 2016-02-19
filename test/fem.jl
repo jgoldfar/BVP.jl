@@ -5,11 +5,11 @@ const fem_test_tol = 1e-4
 function fem_test1(N::Int = 100)
   r(x) = zero(x)
   q(x) = zero(x)
-  const va = 0.0
-  const vb = 0.0
+  va = 0.0
+  vb = 0.0
   utrue(x) = zero(x)
-  const xg, uc = fem_spectral(r, q, va, vb, N, Val{:neumann})
-  const ut = map(utrue, xg)
+  xg, uc = fem_spectral(r, q, va, vb, N, Val{:neumann})
+  ut = map(utrue, xg)
   @test norm(ut - uc) < fem_test_tol
   return 0
 end

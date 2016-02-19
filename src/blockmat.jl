@@ -12,12 +12,12 @@ end
 # ~an order of magnitude at block size 100.
 function Base.sparse{T}(B::BlockMatrix{T})
   # Assume all blocks are nxn. TODO: Remove assumption.
-  const M = B.mats[1]
-  const n, n2 = size(M)
-  const vT = eltype(M)
-  const nm = length(B.mats)
-  const Iv, Jv = Array(Int, nm*n*n), Array(Int, nm*n*n)
-  const Ev = Array(vT, nm*n*n)
+  M = B.mats[1]
+  n, n2 = size(M)
+  vT = eltype(M)
+  nm = length(B.mats)
+  Iv, Jv = Array(Int, nm*n*n), Array(Int, nm*n*n)
+  Ev = Array(vT, nm*n*n)
   for i in 1:nm
     Mi = B.mats[i]
     r = (B.rows[i] - 1) * n + 1
@@ -36,10 +36,10 @@ end
 # function Base.sparse{T}(B::BlockMatrix{T})
 #   # Assume all blocks are nxn. TODO: Remove assumption.
 #   M = B.mats[1]
-#   const (n, n2) = size(M)
-#   const vT = eltype(M)
-#   const Iv, Jv = Array(Int, 0), Array(Int, 0)
-#   const Ev = Array(vT, 0)
+#   (n, n2) = size(M)
+#   vT = eltype(M)
+#   Iv, Jv = Array(Int, 0), Array(Int, 0)
+#   Ev = Array(vT, 0)
 #   for (i, M) in enumerate(B.mats)
 #     r = (B.rows[i] - 1) * n + 1
 #     c = (B.cols[i] - 1) * n + 1

@@ -1,16 +1,16 @@
 ## Begin RK4
 function rk4{T<:Real}(odefun::Function,
-                      xgrid::GridType{T},
+                      xgrid::AbstractVector,
                       iv::Vector{T},
                       param::Real)
-  const nv = length(iv)
-  const nxgrid = length(xgrid)
-  const yvout = Array(T, nv, nxgrid)
+  nv = length(iv)
+  nxgrid = length(xgrid)
+  yvout = Array(T, nv, nxgrid)
   for i in 1:nv
     yvout[i, 1] = iv[i]
   end
   xcurr = xgrid[1]
-  const yprev = copy(iv)
+  yprev = copy(iv)
   for i in 2:nxgrid
     # Save x values/indexing between iterations
     xprev, xcurr = xcurr, xgrid[i]
@@ -32,16 +32,16 @@ function rk4{T<:Real}(odefun::Function,
   return yvout
 end
 function rk4{T<:Real}(odefun::Function,
-                      xgrid::GridType{T},
+                      xgrid::AbstractVector,
                       iv::Vector{T})
-  const nv = length(iv)
-  const nxgrid = length(xgrid)
-  const yvout = Array(T, nv, nxgrid)
+  nv = length(iv)
+  nxgrid = length(xgrid)
+  yvout = Array(T, nv, nxgrid)
   for i in 1:nv
     yvout[i, 1] = iv[i]
   end
   xcurr = xgrid[1]
-  const yprev = iv
+  yprev = iv
   for i in 2:nxgrid
     # Save x values/indexing between iterations
     xprev, xcurr = xcurr, xgrid[i]
@@ -65,13 +65,13 @@ end
 
 # Implementations saving only the value at the final moment
 function rk4_final{T<:Real}(odefun::Function,
-                            xgrid::GridType{T},
+                            xgrid::AbstractVector,
                             iv::Vector{T},
                             param::Real)
-  const nxgrid = length(xgrid)
-  const nv = length(iv)
+  nxgrid = length(xgrid)
+  nv = length(iv)
   xcurr = xgrid[1]
-  const ycurr = copy(iv)
+  ycurr = copy(iv)
   for i in 2:nxgrid
     # Save x values/indexing between iterations
     xprev, xcurr = xcurr, xgrid[i]
@@ -90,12 +90,12 @@ function rk4_final{T<:Real}(odefun::Function,
   return ycurr
 end
 function rk4_final{T<:Real}(odefun::Function,
-                            xgrid::GridType{T},
+                            xgrid::AbstractVector,
                             iv::Vector{T})
-  const nxgrid = length(xgrid)
-  const nv = length(iv)
+  nxgrid = length(xgrid)
+  nv = length(iv)
   xcurr = xgrid[1]
-  const ycurr = copy(iv)
+  ycurr = copy(iv)
   for i in 2:nxgrid
     # Save x values/indexing between iterations
     xprev, xcurr = xcurr, xgrid[i]

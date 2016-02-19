@@ -1,16 +1,16 @@
 function fem_spectral(r::Function, q::Function, va::Real, vb::Real, N::Int, ::Type{Val{:neumann}}, napprox::Int = N)
   # Solver for y'' - r y == q, y'(0)=va, y'(1)=vb
-  const T = typeof(va)
-  const xgrid = linspace(0, 1, N)
-  const A = Array(T, napprox, napprox)
-  const b = Array(T, napprox)
+  T = typeof(va)
+  xgrid = linspace(0, 1, N)
+  A = Array(T, napprox, napprox)
+  b = Array(T, napprox)
   for i in 1:napprox
     hi(x::Real) = cos(i * pi * x) + sin(i * pi * x)
     hip(x::Real) = i *pi * (cos(i * pi * x) - sin(i * pi * x))
     for j in 1:napprox
       hj(x::Real) = cos(j * pi * x) + sin(j * pi * x)
       hjp(x::Real) = j *pi * (cos(j * pi * x) - sin(j * pi * x))
-      t(x::Real) = hip(x) * hjp(x) + r(x) * hi(x) * hj(x)# + p(x) * hip(x) * hj(x) + r(x) * hi(x) * hj(x)
+      t = (x) -> hip(x) * hjp(x) + r(x) * hi(x) * hj(x)# + p(x) * hip(x) * hj(x) + r(x) * hi(x) * hj(x)
       A[j, i] = first(quadgk(t, 0, 1, abstol=1e-5))
     end
     t(x::Real) = q(x) * hi(x)
@@ -18,12 +18,12 @@ function fem_spectral(r::Function, q::Function, va::Real, vb::Real, N::Int, ::Ty
   end
 #   println(A)
 #   println(b)
-  const beta_i = \(A, b)
+  beta_i = \(A, b)
   rec(x::Real) = sinser_reconstruct(x, beta_i)
   return xgrid, map(rec, xgrid)
 end
 function sinser_reconstruct{T<:Real}(x::Real, beta_i::Vector{T})
-  const N = length(beta_i)
+  N = length(beta_i)
   vo = 0.0
   for i in 1:(N-1)
     vo += beta_i[i] * sin(i*pi*x)
@@ -32,10 +32,10 @@ function sinser_reconstruct{T<:Real}(x::Real, beta_i::Vector{T})
 end
 function fem_galerk(p::Function, r::Function, q::Function, va::Real, vb::Real, N::Int, ::Type{Val{:neumann}})
   # Solver for y'' - p y' - r y == q, y'(0)=va, y'(1)=vb
-  const T = typeof(va)
-  const xgrid = linspace(0, 1, N)
-  const A = Array(T, N-1, N-1)
-  const b = Array(T, N-1)
+  T = typeof(va)
+  xgrid = linspace(0, 1, N)
+  A = Array(T, N-1, N-1)
+  b = Array(T, N-1)
   dx = xgrid[2]
   xni = 0.0
   for i in 1:(N-1)
@@ -53,11 +53,11 @@ function fem_galerk(p::Function, r::Function, q::Function, va::Real, vb::Real, N
     b[i] = vb * hi(1) - va * hi(0) - first(quadgk(x->q(x) * hi(x), 0, 1))
   end
   #     println(A)
-  const beta_i = \(A, b)
+  beta_i = \(A, b)
   rec(x) = elem_1d_pwlin_reconstruct(x, xgrid, beta_i)
   return xgrid, map(rec, xgrid)
 end
-function elem_1d_pwlin_reconstruct{T<:Real}(x::Real, xgrid::GridType{T}, beta_i::Vector{T})
+function elem_1d_pwlin_reconstruct{T<:Real}(x::Real, xgrid::AbstractVector, beta_i::Vector{T})
   N = length(xgrid)
   dx = xgrid[2]
   xni = 0.0

@@ -1,16 +1,16 @@
 # Implementation of FDM and collocation methods for BVP
 function fdm(p::Function, r::Function, q::Function, va::Real, vb::Real, N::Int)
   # Solver for y'' - p y' - r y == q, y(0)=va, y(1)=vb
-  const T = typeof(va)
+  T = typeof(va)
   if VERSION >= v"0.4-"
-    const xgrid = linspace(0, 1, N + 1)
+    xgrid = linspace(0, 1, N + 1)
   else
-    const xgrid = linrange(0, 1, N + 1)
+    xgrid = linrange(0, 1, N + 1)
   end
-  const h = step(xgrid)
-  const subdiag, maindiag, supdiag = Array(T, N), Array(T, N + 1), Array(T, N)
-  const A = Tridiagonal(subdiag, maindiag, supdiag)
-  const rhs = Array(T, N + 1)
+  h = step(xgrid)
+  subdiag, maindiag, supdiag = Array(T, N), Array(T, N + 1), Array(T, N)
+  A = Tridiagonal(subdiag, maindiag, supdiag)
+  rhs = Array(T, N + 1)
 
   maindiag[1] = one(T)
   supdiag[1] = zero(T)
@@ -33,16 +33,16 @@ end
 
 include("blockmat.jl")
 
-function trapz{T<:Real}(A::Function, q::Function, Ba::Matrix{T}, Bb::Matrix{T}, beta::Vector{T}, xgrid::GridType{T})
-  const n, n2 = size(Ba)
+function trapz{T<:Real}(A::Function, q::Function, Ba::Matrix{T}, Bb::Matrix{T}, beta::Vector{T}, xgrid::AbstractVector)
+  n, n2 = size(Ba)
   @assert (n == n2) && (size(Bb) == (n, n2))
-  const nx = length(xgrid)
+  nx = length(xgrid)
   xn = xgrid[1]
   qn = q(xn)
   An = A(xn)
-  const B = BlockMatrix{typeof(Ba)}(2nx)
-  const E = eye(n)
-  const rhs = Array(T, n * nx)
+  B = BlockMatrix{typeof(Ba)}(2nx)
+  E = eye(n)
+  rhs = Array(T, n * nx)
   # Set bc
   cind = 1
   B.rows[cind] = nx; B.cols[cind] = 1; B.mats[cind] = Ba
@@ -67,17 +67,17 @@ function trapz{T<:Real}(A::Function, q::Function, Ba::Matrix{T}, Bb::Matrix{T}, 
   # Debugging only:
   #     S = sparse(B)
   #     println([full(S) rhs])
-  const yv = sparse(B) \ rhs
+  yv = sparse(B) \ rhs
   return xgrid, reshape(yv, n, nx)
 end
-function trapz{T<:Real}(A::Function, q::Function, Ba::Real, Bb::Real, beta::Real, xgrid::GridType{T})
-  const nx = length(xgrid)
+function trapz(A::Function, q::Function, Ba::Real, Bb::Real, beta::Real, xgrid::AbstractVector)
+  nx = length(xgrid)
   xn = xgrid[1]
   qn = q(xn)
   An = A(xn)
-  const To = typeof(qn)
-  const M = zeros(T, nx, nx)
-  const rhs = Array(To, nx)
+  To = typeof(qn)
+  M = zeros(eltype(An), nx, nx)
+  rhs = Array(To, nx)
 
   for i in 1:(nx - 1)
     xc, xn = xn, xgrid[i + 1]
@@ -94,17 +94,17 @@ function trapz{T<:Real}(A::Function, q::Function, Ba::Real, Bb::Real, beta::Real
   rhs[nx] = beta
   return xgrid, M \ rhs
 end
-function trapz_sep{T<:Real}(A::Function, q::Function, Ba::Matrix{T}, Bb::Matrix{T}, betaa::Vector{T}, betab::Vector{T}, xgrid::GridType{T})
-  const n, n2 = size(Ba)
+function trapz_sep{T<:Real}(A::Function, q::Function, Ba::Matrix{T}, Bb::Matrix{T}, betaa::Vector{T}, betab::Vector{T}, xgrid::AbstractVector)
+  n, n2 = size(Ba)
   @assert (n == n2) && (size(Bb) == (n, n2))
-  const nx = length(xgrid)
+  nx = length(xgrid)
   xn = xgrid[1]
   qn = q(xn)
   An = A(xn)
-  #   const B = BlockMatrix{typeof(Ba)}(2nx)
-  const B = BlockMatrix{typeof(Ba)}()
-  const E = eye(n)
-  const rhs = Array(T, n * nx)
+  #   B = BlockMatrix{typeof(Ba)}(2nx)
+  B = BlockMatrix{typeof(Ba)}()
+  E = eye(n)
+  rhs = Array(T, n * nx)
   # Set bc
   #   cind = 1
   #   B.rows[cind] = 1; B.cols[cind] = 1; B.mats[cind] = Ba
@@ -136,21 +136,21 @@ function trapz_sep{T<:Real}(A::Function, q::Function, Ba::Matrix{T}, Bb::Matrix{
   #   S = sparse(B)
   #   println("\n", [full(S) rhs])
   #   println("\n", full(S))
-  #   const yv = sparse(S) \ rhs
+  #   yv = sparse(S) \ rhs
 
-  const yv = sparse(B) \ rhs
+  yv = sparse(B) \ rhs
   return xgrid, reshape(yv, n, nx)
 end
 
-function trapz_sep{T<:Real}(A::Function, q::Function, betaa::Real, betab::Real, xgrid::GridType{T})
-  const nx = length(xgrid)
+function trapz_sep(A::Function, q::Function, betaa::Real, betab::Real, xgrid::AbstractVector)
+  nx = length(xgrid)
   xn = xgrid[1]
   qn = q(xn)
   An = A(xn)
-  const To = typeof(qn)
-  const subdiag, maindiag, supdiag = zeros(To, nx - 1), Array(To, nx), Array(To, nx - 1)
-  const M = Tridiagonal(subdiag, maindiag, supdiag)
-  const rhs = Array(To, nx)
+  To = typeof(qn)
+  subdiag, maindiag, supdiag = zeros(To, nx - 1), Array(To, nx), Array(To, nx - 1)
+  M = Tridiagonal(subdiag, maindiag, supdiag)
+  rhs = Array(To, nx)
   maindiag[1] = one(To)
   rhs[1] = betaa
   supdiag[1] = zero(To)

@@ -1,10 +1,6 @@
 # Recommended: Run with  `find . -name '*.jl' | peat 'julia --color test/runtests.jl'`
 
-if VERSION < v"0.4-"
-  typealias LinSpace{T} Vector{T}
-end
 using Compat
-typealias GridType{T} Union{Vector{T}, LinSpace{T}}
 const pkgbasedir = joinpath(dirname(@__FILE__), "..")
 # include(joinpath(dirname(@__FILE__), "..", "src", "bvp.jl"))
 include(joinpath(pkgbasedir, "src", "odesolve.jl"))
