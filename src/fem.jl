@@ -13,7 +13,7 @@ function fem_spectral(r::Function, q::Function, va::Real, vb::Real, N::Int, ::Ty
       t = (x) -> hip(x) * hjp(x) + r(x) * hi(x) * hj(x)# + p(x) * hip(x) * hj(x) + r(x) * hi(x) * hj(x)
       A[j, i] = first(quadgk(t, 0, 1, abstol=1e-5))
     end
-    t(x::Real) = q(x) * hi(x)
+    t = x -> q(x) * hi(x)
     b[i] = vb * hi(1) - va - first(quadgk(t, 0, 1, abstol=1e-5))
   end
 #   println(A)

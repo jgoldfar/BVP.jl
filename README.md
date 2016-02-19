@@ -1,5 +1,5 @@
 # README #
-[![Build Status](https://magnum.travis-ci.com/jgoldfar/BVP.jl.svg?token=zdgtXHoeQwBuQetRRHxV)](https://magnum.travis-ci.com/jgoldfar/BVP.jl)
+[![Build Status](https://travis-ci.org/jgoldfar/BVP.jl.svg?branch=master)](https://travis-ci.org/jgoldfar/BVP.jl)
 
 ### What is this repository for? ###
 
